@@ -28,7 +28,7 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		w.WriteHeader(500)
 	}
-	games[newGame.Title] = newGame
+	games = append(games, newGame)
 }
 
 // handleGet will search the DB for the specified game title
@@ -36,46 +36,41 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 func handleGet(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameTitle := vars["title"]
-	game, ok := games[gameTitle]
-	if ok {
-		jsonData, err := json.MarshalIndent(&game, "", "\t")
-		if err != nil {
-			fmt.Println(err.Error())
-			w.WriteHeader(500)
-		} else {
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(jsonData)
+	for _, game := range games {
+		if gameTitle == game.Title {
+			json.NewEncoder(w).Encode(&game)
+			return
 		}
-	} else {
-		str := fmt.Sprintf("Could not find %s anywhere in the database\n", gameTitle)
-		w.Write([]byte(str))
-		w.WriteHeader(404)
 	}
+	w.WriteHeader(404)
+	json.NewEncoder(w).Encode(&Game{})
 }
 
 // handleDelete will remove the specified game from the database
 func handleDelete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameTitle := vars["title"]
-	if _, ok := games[gameTitle]; ok {
-		delete(games, gameTitle)
-		w.WriteHeader(200)
-	} else {
-		w.WriteHeader(404)
+	for ndx, game := range games {
+		if gameTitle == game.Title {
+			games = append(games[:ndx], games[ndx+1:]...)
+			w.WriteHeader(200)
+			return
+		}
 	}
+	w.WriteHeader(404)
 }
 
 // Represents the database for the REST api for now
-var games map[string]Game
+var games []Game
 
 func main() {
-	games = make(map[string]Game)
+	games = make([]Game, 10)
 
 	// mock data
-	games["skyrim"] = Game{"skyrim", "bethesda", "M"}
-	games["2k"] = Game{"2k", "2k games", "E"}
-	games["FIFA18"] = Game{"FIFA18", "EA", "E"}
-	games["fallout3"] = Game{"fallout3", "bethesda", "M"}
+	games[0] = Game{"skyrim", "bethesda", "M"}
+	games[1] = Game{"2k", "2k games", "E"}
+	games[2] = Game{"FIFA18", "EA", "E"}
+	games[3] = Game{"fallout3", "bethesda", "M"}
 
 	r := mux.NewRouter()
 	r.HandleFunc("/gameAPI/add", handleAdd).Methods("POST")
