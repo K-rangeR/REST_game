@@ -61,6 +61,7 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Represents the database for the REST api for now
 var games map[string]Game
 
 func main() {
