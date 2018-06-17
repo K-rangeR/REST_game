@@ -97,8 +97,8 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/gameAPI/add", handleAdd).Methods("POST")
-	r.HandleFunc("/gameAPI/get/{title}", handleGet).Methods("GET")
-	r.HandleFunc("/gameAPI/update/{title}", handleUpdate).Methods("PUT")
-	r.HandleFunc("/gameAPI/delete/{title}", handleDelete).Methods("DELETE")
+	r.HandleFunc("/gameAPI/{title}", handleGet).Methods("GET")
+	r.HandleFunc("/gameAPI/{title}", handleUpdate).Methods("PUT")
+	r.HandleFunc("/gameAPI/{title}", handleDelete).Methods("DELETE")
 	log.Fatal(http.ListenAndServe("127.0.0.1:8080", r))
 }
