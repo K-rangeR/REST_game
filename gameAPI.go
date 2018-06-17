@@ -46,6 +46,29 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&Game{})
 }
 
+// handleUpdate will update the data on an existing game
+func handleUpdate(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	gameTitle := vars["title"]
+	for i, game := range games {
+		if gameTitle == game.Title {
+			var updatedGame Game
+			bodySize := r.ContentLength
+			bodyData := make([]byte, bodySize)
+			r.Body.Read(bodyData)
+			err := json.Unmarshal(bodyData, &updatedGame)
+			if err != nil {
+				w.WriteHeader(500)
+				return
+			}
+			games[i] = updatedGame
+			w.WriteHeader(200)
+			return
+		}
+	}
+	w.WriteHeader(404)
+}
+
 // handleDelete will remove the specified game from the database
 func handleDelete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -75,6 +98,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/gameAPI/add", handleAdd).Methods("POST")
 	r.HandleFunc("/gameAPI/get/{title}", handleGet).Methods("GET")
+	r.HandleFunc("/gameAPI/update/{title}", handleUpdate).Methods("PUT")
 	r.HandleFunc("/gameAPI/delete/{title}", handleDelete).Methods("DELETE")
 	log.Fatal(http.ListenAndServe("127.0.0.1:8080", r))
 }
