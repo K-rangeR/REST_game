@@ -50,12 +50,15 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleUpdate(w http.ResponseWriter, r *http.Request) {
-
-}
-
+// handleDelete will remove the specified game from the database
 func handleDelete(w http.ResponseWriter, r *http.Request) {
-
+	gameTitle := path.Base(r.URL.Path)
+	if _, ok := games[gameTitle]; ok {
+		delete(games, gameTitle)
+		w.WriteHeader(200)
+	} else {
+		w.WriteHeader(404)
+	}
 }
 
 var games map[string]Game
@@ -67,7 +70,6 @@ func main() {
 	}
 	http.HandleFunc("/gameAPI/add", handleAdd)
 	http.HandleFunc("/gameAPI/get/", handleGet)
-	http.HandleFunc("gameAPI/update/", handleUpdate)
 	http.HandleFunc("/gameAPI/delete/", handleDelete)
 	server.ListenAndServe()
 }
