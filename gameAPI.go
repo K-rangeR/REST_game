@@ -83,6 +83,37 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(404)
 }
 
+// handleGetDeveloper will get a list of all the games with
+// the specified developer
+func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	developer := vars["developer"]
+	list := make([]Game, 0)
+	for _, game := range games {
+		if game.Developer == developer {
+			list = append(list, game)
+		}
+	}
+	if err := json.NewEncoder(w).Encode(&list); err != nil {
+		w.WriteHeader(500)
+	}
+}
+
+// handleGetRating will get a list of all the games with the specified rating
+func handleGetRating(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	rating := vars["rating"]
+	list := make([]Game, 0)
+	for _, game := range games {
+		if game.Rating == rating {
+			list = append(list, game)
+		}
+	}
+	if err := json.NewEncoder(w).Encode(&list); err != nil {
+		w.WriteHeader(500)
+	}
+}
+
 // Represents the database for the REST api for now
 var games []Game
 
@@ -100,5 +131,7 @@ func main() {
 	r.HandleFunc("/gameAPI/{title}", handleGet).Methods("GET")
 	r.HandleFunc("/gameAPI/{title}", handleUpdate).Methods("PUT")
 	r.HandleFunc("/gameAPI/{title}", handleDelete).Methods("DELETE")
+	r.HandleFunc("/gameAPI/developers/{developer}", handleGetDeveloper).Methods("GET")
+	r.HandleFunc("/gameAPI/rating/{rating}", handleGetRating).Methods("GET")
 	log.Fatal(http.ListenAndServe("127.0.0.1:8080", r))
 }
