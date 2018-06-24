@@ -131,7 +131,7 @@ func main() {
 	r.HandleFunc("/gameAPI/{title}", handleGet).Methods("GET")
 	r.HandleFunc("/gameAPI/{title}", handleUpdate).Methods("PUT")
 	r.HandleFunc("/gameAPI/{title}", handleDelete).Methods("DELETE")
-	r.HandleFunc("/gameAPI/developers/{developer}", handleGetDeveloper).Methods("GET")
+	r.HandleFunc("/gameAPI/developer/{developer}", handleGetDeveloper).Methods("GET")
 	r.HandleFunc("/gameAPI/rating/{rating}", handleGetRating).Methods("GET")
 	log.Fatal(http.ListenAndServe("127.0.0.1:8080", r))
 }
