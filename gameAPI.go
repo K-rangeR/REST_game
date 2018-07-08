@@ -125,7 +125,6 @@ func main() {
 	games[1] = Game{"2k", "2k games", "E"}
 	games[2] = Game{"FIFA18", "EA", "E"}
 	games[3] = Game{"fallout3", "bethesda", "M"}
-
 	r := mux.NewRouter()
 	r.HandleFunc("/gameAPI/add", handleAdd).Methods("POST")
 	r.HandleFunc("/gameAPI/{title}", handleGet).Methods("GET")
