@@ -9,7 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Game represents some data that is part of a vidio game
+// Game represents some data that is part of a video game
 type Game struct {
 	Title     string `json:"title"`
 	Developer string `json:"developer"`
