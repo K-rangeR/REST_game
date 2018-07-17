@@ -103,3 +103,10 @@ func deleteGame(title string) error {
 	_, err := db.Exec(statement, title)
 	return err
 }
+
+// updateGame updates the info of a game whos name matches the given name
+func (g *Game) updateGame(title string) error {
+	statement := `update games set title = $2, developer = $3, rating = $4 where title = $1`
+	_, err := db.Exec(statement, title, g.Title, g.Developer, g.Rating)
+	return err
+}

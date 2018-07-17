@@ -52,23 +52,22 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 func handleUpdate(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameTitle := vars["title"]
-	for i, game := range games {
-		if gameTitle == game.Title {
-			var updatedGame Game
-			bodySize := r.ContentLength
-			bodyData := make([]byte, bodySize)
-			r.Body.Read(bodyData)
-			err := json.Unmarshal(bodyData, &updatedGame)
-			if err != nil {
-				w.WriteHeader(500)
-				return
-			}
-			games[i] = updatedGame
-			w.WriteHeader(200)
-			return
-		}
+	game, err := getGameByTitle(gameTitle)
+	if err != nil {
+		w.WriteHeader(404)
+		return
 	}
-	w.WriteHeader(404)
+
+	length := r.ContentLength
+	body := make([]byte, length)
+	r.Body.Read(body)
+	json.Unmarshal(body, &game)
+	err = game.updateGame(gameTitle)
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	w.WriteHeader(200)
 }
 
 // handleDelete will remove the specified game from the database
