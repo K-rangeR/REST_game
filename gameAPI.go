@@ -75,14 +75,12 @@ func handleUpdate(w http.ResponseWriter, r *http.Request) {
 func handleDelete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameTitle := vars["title"]
-	for ndx, game := range games {
-		if gameTitle == game.Title {
-			games = append(games[:ndx], games[ndx+1:]...)
-			w.WriteHeader(200)
-			return
-		}
+	err := deleteGame(gameTitle)
+	if err != nil {
+		w.WriteHeader(404)
+		return
 	}
-	w.WriteHeader(404)
+	w.WriteHeader(200)
 }
 
 // handleGetDeveloper will get a list of all the games with

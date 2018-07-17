@@ -55,3 +55,10 @@ func getGameByTitle(title string) (*Game, error) {
 	err := db.QueryRow(statement, title).Scan(&game.Title, &game.Developer, &game.Rating)
 	return game, err
 }
+
+// deleteGame removes the game from the database with the specific title
+func deleteGame(title string) error {
+	statement := `delete from games where title = $1`
+	_, err := db.Exec(statement, title)
+	return err
+}
