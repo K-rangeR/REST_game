@@ -100,15 +100,12 @@ func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 func handleGetRating(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	rating := vars["rating"]
-	list := make([]Game, 0)
-	for _, game := range games {
-		if game.Rating == rating {
-			list = append(list, game)
-		}
+	games1, err := getGamesWithRating(rating)
+	if err != nil {
+		w.WriteHeader(404)
+		return
 	}
-	if err := json.NewEncoder(w).Encode(&list); err != nil {
-		w.WriteHeader(500)
-	}
+	json.NewEncoder(w).Encode(&games1)
 }
 
 // Represents the database for the REST api for now

@@ -77,6 +77,26 @@ func getGamesByDeveloper(developer string) ([]Game, error) {
 	return games, nil
 }
 
+// getGamesWithRating will get all games with the given rating
+func getGamesWithRating(rating string) ([]Game, error) {
+	statement := `select * from games where rating = $1`
+	rows, err := db.Query(statement, rating)
+	if err != nil {
+		return nil, err
+	}
+
+	games := make([]Game, 0)
+	for rows.Next() {
+		game := Game{}
+		err := rows.Scan(&game.Title, &game.Developer, &game.Rating)
+		if err != nil {
+			return nil, err
+		}
+		games = append(games, game)
+	}
+	return games, nil
+}
+
 // deleteGame removes the game from the database with the specific title
 func deleteGame(title string) error {
 	statement := `delete from games where title = $1`
