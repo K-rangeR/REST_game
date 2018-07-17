@@ -27,6 +27,7 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err.Error())
 		w.WriteHeader(500)
+		return
 	}
 	if err = newGame.addGame(); err != nil {
 		fmt.Println(err.Error())
@@ -107,18 +108,7 @@ func handleGetRating(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&games1)
 }
 
-// Represents the database for the REST api for now
-var games []Game
-
 func main() {
-	games = make([]Game, 10)
-
-	// mock data
-	games[0] = Game{"skyrim", "bethesda", "M"}
-	games[1] = Game{"2k", "2k games", "E"}
-	games[2] = Game{"FIFA18", "EA", "E"}
-	games[3] = Game{"fallout3", "bethesda", "M"}
-
 	r := mux.NewRouter()
 	r.HandleFunc("/gameAPI/add", handleAdd).Methods("POST")
 	r.HandleFunc("/gameAPI/{title}", handleGet).Methods("GET")
