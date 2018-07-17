@@ -28,7 +28,10 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		w.WriteHeader(500)
 	}
-	games = append(games, newGame)
+	if err = newGame.addGame(); err != nil {
+		fmt.Println(err.Error())
+		w.WriteHeader(500)
+	}
 }
 
 // handleGet will search the DB for the specified game title
@@ -36,14 +39,13 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 func handleGet(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameTitle := vars["title"]
-	for _, game := range games {
-		if gameTitle == game.Title {
-			json.NewEncoder(w).Encode(&game)
-			return
-		}
+	game, err := getGameByTitle(gameTitle)
+	if err != nil {
+		fmt.Println(err.Error())
+		json.NewEncoder(w).Encode(&Game{})
+		w.WriteHeader(404)
 	}
-	w.WriteHeader(404)
-	json.NewEncoder(w).Encode(&Game{})
+	json.NewEncoder(w).Encode(&game)
 }
 
 // handleUpdate will update the data on an existing game
@@ -125,6 +127,7 @@ func main() {
 	games[1] = Game{"2k", "2k games", "E"}
 	games[2] = Game{"FIFA18", "EA", "E"}
 	games[3] = Game{"fallout3", "bethesda", "M"}
+
 	r := mux.NewRouter()
 	r.HandleFunc("/gameAPI/add", handleAdd).Methods("POST")
 	r.HandleFunc("/gameAPI/{title}", handleGet).Methods("GET")

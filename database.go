@@ -40,3 +40,18 @@ func checkDBConnection() {
 	}
 	fmt.Println("Successfully connected to the database")
 }
+
+// addGame addes all the game to the database
+func (g *Game) addGame() error {
+	statement := `insert into games (title, developer, rating) values ($1, $2, $3)`
+	_, err := db.Query(statement, g.Title, g.Developer, g.Rating)
+	return err
+}
+
+// Searchs the database for a game whos title matches the title given
+func getGameByTitle(title string) (*Game, error) {
+	game := &Game{}
+	statement := "select title, developer, rating from games where title = $1"
+	err := db.QueryRow(statement, title).Scan(&game.Title, &game.Developer, &game.Rating)
+	return game, err
+}
