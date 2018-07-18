@@ -89,25 +89,25 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
 func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	developer := vars["developer"]
-	games1, err := getGamesByDeveloper(developer) // change back to games
+	games, err := getGamesByDeveloper(developer) // change back to games
 	if err != nil {
 		fmt.Println("handle get dev:", err.Error())
 		w.WriteHeader(404)
 		return
 	}
-	json.NewEncoder(w).Encode(&games1)
+	json.NewEncoder(w).Encode(&games)
 }
 
 // handleGetRating will get a list of all the games with the specified rating
 func handleGetRating(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	rating := vars["rating"]
-	games1, err := getGamesWithRating(rating)
+	games, err := getGamesWithRating(rating)
 	if err != nil {
 		w.WriteHeader(404)
 		return
 	}
-	json.NewEncoder(w).Encode(&games1)
+	json.NewEncoder(w).Encode(&games)
 }
 
 func main() {
