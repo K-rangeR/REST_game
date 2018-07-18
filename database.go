@@ -66,7 +66,6 @@ func getGamesByDeveloper(developer string) ([]Game, error) {
 	}
 	defer rows.Close()
 
-	// determines if a row was found
 	if !rows.Next() {
 		fmt.Println("no rows")
 		return nil, sql.ErrNoRows
@@ -92,6 +91,11 @@ func getGamesWithRating(rating string) ([]Game, error) {
 	rows, err := db.Query(statement, rating)
 	if err != nil {
 		return nil, err
+	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		return nil, sql.ErrNoRows
 	}
 
 	games := make([]Game, 0)
