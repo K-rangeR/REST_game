@@ -89,7 +89,7 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
 func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	developer := vars["developer"]
-	games, err := getGamesByDeveloper(developer) // change back to games
+	games, err := getGamesByDeveloper(developer)
 	if err != nil {
 		fmt.Println("handle get dev:", err.Error())
 		w.WriteHeader(404)
