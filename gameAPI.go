@@ -42,11 +42,12 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 	gameTitle := vars["title"]
 	game, err := getGameByTitle(gameTitle)
 	if err != nil {
-		fmt.Println(err.Error())
-		json.NewEncoder(w).Encode(&Game{})
+		fmt.Println("line 45", err.Error())
 		w.WriteHeader(404)
+		return
 	}
 	json.NewEncoder(w).Encode(&game)
+	w.WriteHeader(200)
 }
 
 // handleUpdate will update the data on an existing game
@@ -90,6 +91,7 @@ func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 	developer := vars["developer"]
 	games1, err := getGamesByDeveloper(developer) // change back to games
 	if err != nil {
+		fmt.Println("handle get dev:", err.Error())
 		w.WriteHeader(404)
 		return
 	}

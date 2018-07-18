@@ -64,9 +64,17 @@ func getGamesByDeveloper(developer string) ([]Game, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
+
+	// determines if a row was found
+	if !rows.Next() {
+		fmt.Println("no rows")
+		return nil, sql.ErrNoRows
+	}
 
 	games := make([]Game, 0)
 	for rows.Next() {
+		fmt.Println("looping...")
 		game := Game{}
 		err := rows.Scan(&game.Title, &game.Developer, &game.Rating)
 		if err != nil {
@@ -74,6 +82,7 @@ func getGamesByDeveloper(developer string) ([]Game, error) {
 		}
 		games = append(games, game)
 	}
+	fmt.Println("After loop...")
 	return games, nil
 }
 
