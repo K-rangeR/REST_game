@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -29,6 +30,7 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
+	setGameDataCase(&newGame)
 	if err = newGame.addGame(); err != nil {
 		fmt.Println(err.Error())
 		w.WriteHeader(500)
@@ -40,6 +42,8 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 func handleGet(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameTitle := vars["title"]
+	fmt.Println(gameTitle)
+	gameTitle = strings.ToLower(gameTitle)
 	game, err := getGameByTitle(gameTitle)
 	if err != nil {
 		fmt.Println("line 45", err.Error())
@@ -64,6 +68,7 @@ func handleUpdate(w http.ResponseWriter, r *http.Request) {
 	body := make([]byte, length)
 	r.Body.Read(body)
 	json.Unmarshal(body, &game)
+	setGameDataCase(game)
 	err = game.updateGame(gameTitle)
 	if err != nil {
 		w.WriteHeader(500)
@@ -72,10 +77,19 @@ func handleUpdate(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
+// setGameDataCase will set the games title, developer, and
+// rating to lower case before its added to the database
+func setGameDataCase(g *Game) {
+	strings.ToLower(g.Title)
+	strings.ToLower(g.Developer)
+	strings.ToLower(g.Rating)
+}
+
 // handleDelete will remove the specified game from the database
 func handleDelete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameTitle := vars["title"]
+	gameTitle = strings.ToLower(gameTitle)
 	err := deleteGame(gameTitle)
 	if err != nil {
 		w.WriteHeader(404)
@@ -89,6 +103,7 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
 func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	developer := vars["developer"]
+	developer = strings.ToLower(developer)
 	games, err := getGamesByDeveloper(developer)
 	if err != nil {
 		fmt.Println("handle get dev:", err.Error())
@@ -102,6 +117,7 @@ func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 func handleGetRating(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	rating := vars["rating"]
+	rating = strings.ToLower(rating)
 	games, err := getGamesWithRating(rating)
 	if err != nil {
 		w.WriteHeader(404)
