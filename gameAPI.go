@@ -82,7 +82,7 @@ func handleUpdate(w http.ResponseWriter, r *http.Request) {
 func setGameDataCase(g *Game) {
 	strings.ToLower(g.Title)
 	strings.ToLower(g.Developer)
-	strings.ToLower(g.Rating)
+	strings.ToUpper(g.Rating)
 }
 
 // handleDelete will remove the specified game from the database
@@ -117,7 +117,7 @@ func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 func handleGetRating(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	rating := vars["rating"]
-	rating = strings.ToLower(rating)
+	rating = strings.ToUpper(rating)
 	games, err := getGamesWithRating(rating)
 	if err != nil {
 		w.WriteHeader(404)
