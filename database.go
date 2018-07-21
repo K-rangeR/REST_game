@@ -60,33 +60,18 @@ func getGameByTitle(title string) (*Game, error) {
 // by the given developer
 func getGamesByDeveloper(developer string) ([]Game, error) {
 	statement := `select * from games where developer = $1`
-	rows, err := db.Query(statement, developer)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	if !rows.Next() {
-		fmt.Println("no rows")
-		return nil, sql.ErrNoRows
-	}
-
-	games := make([]Game, 0)
-	for rows.Next() {
-		game := Game{}
-		err := rows.Scan(&game.Title, &game.Developer, &game.Rating)
-		if err != nil {
-			return nil, err
-		}
-		games = append(games, game)
-	}
-	return games, nil
+	return getSliceOfGames(statement, developer)
 }
 
 // getGamesWithRating will get all games with the given rating
 func getGamesWithRating(rating string) ([]Game, error) {
 	statement := `select * from games where rating = $1`
-	rows, err := db.Query(statement, rating)
+	return getSliceOfGames(statement, rating)
+}
+
+// getListOfGames will read rows from the dababase
+func getSliceOfGames(statement, value string) ([]Game, error) {
+	rows, err := db.Query(statement, value)
 	if err != nil {
 		return nil, err
 	}
