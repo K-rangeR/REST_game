@@ -27,13 +27,13 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 	err := json.Unmarshal(bodyData, &newGame)
 	if err != nil {
 		fmt.Println(err.Error())
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	setGameDataCase(&newGame)
 	if err = newGame.addGame(); err != nil {
 		fmt.Println(err.Error())
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
 
@@ -47,11 +47,11 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 	game, err := getGameByTitle(gameTitle)
 	if err != nil {
 		fmt.Println("line 45", err.Error())
-		w.WriteHeader(404)
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	json.NewEncoder(w).Encode(&game)
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 }
 
 // handleUpdate will update the data on an existing game
@@ -60,7 +60,7 @@ func handleUpdate(w http.ResponseWriter, r *http.Request) {
 	gameTitle := vars["title"]
 	game, err := getGameByTitle(gameTitle)
 	if err != nil {
-		w.WriteHeader(404)
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
@@ -71,10 +71,10 @@ func handleUpdate(w http.ResponseWriter, r *http.Request) {
 	setGameDataCase(game)
 	err = game.updateGame(gameTitle)
 	if err != nil {
-		w.WriteHeader(500)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 }
 
 // setGameDataCase will set the games title, developer, and
@@ -92,10 +92,10 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
 	gameTitle = strings.ToLower(gameTitle)
 	err := deleteGame(gameTitle)
 	if err != nil {
-		w.WriteHeader(404)
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	w.WriteHeader(200)
+	w.WriteHeader(http.StatusOK)
 }
 
 // handleGetDeveloper will get a list of all the games with
@@ -107,7 +107,7 @@ func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 	games, err := getGamesByDeveloper(developer)
 	if err != nil {
 		fmt.Println("handle get dev:", err.Error())
-		w.WriteHeader(404)
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	json.NewEncoder(w).Encode(&games)
@@ -120,7 +120,7 @@ func handleGetRating(w http.ResponseWriter, r *http.Request) {
 	rating = strings.ToUpper(rating)
 	games, err := getGamesWithRating(rating)
 	if err != nil {
-		w.WriteHeader(404)
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 	json.NewEncoder(w).Encode(&games)
