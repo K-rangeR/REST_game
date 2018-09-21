@@ -18,11 +18,12 @@ type Game struct {
 }
 
 // handleAdd will get the json from the request, convert it
-// to a Game struct and store it in memory
+// to a Game struct and store it in the database
 func handleAdd(w http.ResponseWriter, r *http.Request) {
 	bodySize := r.ContentLength
 	bodyData := make([]byte, bodySize)
 	r.Body.Read(bodyData)
+	defer r.Body.Close()
 	var newGame Game
 	err := json.Unmarshal(bodyData, &newGame)
 	if err != nil {
@@ -34,7 +35,9 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 	if err = newGame.addGame(); err != nil {
 		fmt.Println(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
+	w.WriteHeader(http.StatusOK)
 }
 
 // handleGet will search the DB for the specified game title
@@ -46,7 +49,7 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 	gameTitle = strings.ToLower(gameTitle)
 	game, err := getGameByTitle(gameTitle)
 	if err != nil {
-		fmt.Println("line 45", err.Error())
+		fmt.Println(err.Error())
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -67,6 +70,7 @@ func handleUpdate(w http.ResponseWriter, r *http.Request) {
 	length := r.ContentLength
 	body := make([]byte, length)
 	r.Body.Read(body)
+	defer r.Body.Close()
 	json.Unmarshal(body, &game)
 	setGameDataCase(game)
 	err = game.updateGame(gameTitle)
@@ -111,6 +115,7 @@ func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.NewEncoder(w).Encode(&games)
+	w.WriteHeader(http.StatusOK)
 }
 
 // handleGetRating will get a list of all the games with the specified rating
@@ -124,6 +129,7 @@ func handleGetRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.NewEncoder(w).Encode(&games)
+	w.WriteHeader(http.StatusOK)
 }
 
 func main() {

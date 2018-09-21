@@ -9,6 +9,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// Store a file
 const (
 	host   = "localhost"
 	port   = 5432
@@ -41,14 +42,14 @@ func checkDBConnection() {
 	fmt.Println("Successfully connected to the database")
 }
 
-// addGame addes all the game to the database
+// addGame addes all the game data to the database
 func (g *Game) addGame() error {
 	statement := `insert into games (title, developer, rating) values ($1, $2, $3)`
 	_, err := db.Query(statement, g.Title, g.Developer, g.Rating)
 	return err
 }
 
-// Searchs the database for a game whos title matches the title given
+// getGameByTitle searchs the database for a game whos title matches the title given
 func getGameByTitle(title string) (*Game, error) {
 	game := &Game{}
 	statement := "select title, developer, rating from games where title = $1"
@@ -93,14 +94,14 @@ func getSliceOfGames(statement, value string) ([]Game, error) {
 	return games, nil
 }
 
-// deleteGame removes the game from the database with the specific title
+// deleteGame removes the game from the database whos title matches the given title
 func deleteGame(title string) error {
 	statement := `delete from games where title = $1`
 	_, err := db.Exec(statement, title)
 	return err
 }
 
-// updateGame updates the info of a game whos name matches the given name
+// updateGame updates the info of a game whos title matches the given title
 func (g *Game) updateGame(title string) error {
 	statement := `update games set title = $2, developer = $3, rating = $4 where title = $1`
 	_, err := db.Exec(statement, title, g.Title, g.Developer, g.Rating)
