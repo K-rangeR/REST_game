@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -132,7 +133,19 @@ func handleGetRating(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// Allow user to pass in the name of the db dbCredentials file
+// as a command line argument, may not be able to use init.
 func main() {
+	if len(os.Args) != 2 {
+		fmt.Printf("Usage: %s <database_credentials_file.json>\n", os.Args[0])
+		os.Exit(1)
+	}
+	err := setUpDatabase(os.Args[1])
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 	r := mux.NewRouter()
 	r.HandleFunc("/gameAPI/add", handleAdd).Methods("POST")
 	r.HandleFunc("/gameAPI/{title}", handleGet).Methods("GET")

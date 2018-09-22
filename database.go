@@ -4,35 +4,63 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"os"
 
 	_ "github.com/lib/pq"
 )
 
-// Store a file
-const (
-	host   = "localhost"
-	port   = 5432
-	user   = "postgres"
-	dbname = "game_db"
-)
-
 var db *sql.DB
 
-func init() {
+// dbCredentials contains all the credentials used to connect to a particular
+// postgres database. This info is stored in a JSON file.
+type dbCredentials struct {
+	Host   string `json:"host"`
+	Port   int    `json:"port"`
+	User   string `json:"user"`
+	Dbname string `json:"dbname"`
+}
+
+// setUpDatabase will attempt to connect to correct database
+// using the credentials in the credentialsFile
+func setUpDatabase(credentialsFile string) error {
 	var err error
+
+	credentials, err := getDatabaseCredentials(credentialsFile)
+	if err != nil {
+		fmt.Println("Could not get database login info")
+		return err
+	}
+
 	dbInfo := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable",
-		host, port, user, dbname)
+		credentials.Host, credentials.Port, credentials.User, credentials.User)
+
 	db, err = sql.Open("postgres", dbInfo)
 	if err != nil {
 		fmt.Println("Was unable to connect to the database")
-		panic(err)
+		return err
 	}
 	checkDBConnection()
+	return nil
 }
 
-// checkDBConnection attempts to connect the database, panics if
-// there was an error
+// getDatabaseCredentials loads the database credentials from an
+// external json file
+func getDatabaseCredentials(credentialsFile string) (dbCredentials, error) {
+	var credentials dbCredentials
+	jsonFile, err := os.Open(credentialsFile)
+	if err != nil {
+		return credentials, err
+	}
+	defer jsonFile.Close()
+
+	err = json.NewDecoder(jsonFile).Decode(&credentials)
+	return credentials, err
+}
+
+// checkDBConnection will ping the database and return an error
+// if it was unable to connect
 func checkDBConnection() {
 	err := db.Ping()
 	if err != nil {
