@@ -80,7 +80,7 @@ func (g *Game) addGame() error {
 // getGameByTitle searchs the database for a game whos title matches the title given
 func getGameByTitle(title string) (*Game, error) {
 	game := &Game{}
-	statement := "select title, developer, rating from games where title = $1"
+	statement := `select title, developer, rating from games where title = $1`
 	err := db.QueryRow(statement, title).Scan(&game.Title, &game.Developer, &game.Rating)
 	return game, err
 }
