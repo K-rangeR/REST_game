@@ -137,7 +137,7 @@ func handleGetRating(w http.ResponseWriter, r *http.Request) {
 // as a command line argument, may not be able to use init.
 func main() {
 	if len(os.Args) != 2 {
-		fmt.Printf("Usage: %s <database_credentials_file.json>\n", os.Args[0])
+		fmt.Printf("Usage: %s [database_credentials_file.json]\n", os.Args[0])
 		os.Exit(1)
 	}
 	err := setUpDatabase(os.Args[1])
