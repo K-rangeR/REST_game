@@ -72,7 +72,7 @@ func checkDBConnection() {
 
 // addGame addes all the game data to the database
 func (g *Game) addGame() error {
-	statement := `insert into games (title, developer, rating) values ($1, $2, $3)`
+	statement := `INSERT INTO games (title, developer, rating) VALUES ($1, $2, $3);`
 	_, err := db.Query(statement, g.Title, g.Developer, g.Rating)
 	return err
 }
@@ -80,7 +80,7 @@ func (g *Game) addGame() error {
 // getGameByTitle searchs the database for a game whos title matches the title given
 func getGameByTitle(title string) (*Game, error) {
 	game := &Game{}
-	statement := `select title, developer, rating from games where title = $1`
+	statement := `SELECT title, developer, rating FROM games WHERE title=$1;`
 	err := db.QueryRow(statement, title).Scan(&game.Title, &game.Developer, &game.Rating)
 	return game, err
 }
@@ -88,13 +88,13 @@ func getGameByTitle(title string) (*Game, error) {
 // getGamesByDeveloper will get all games from the database that were made
 // by the given developer
 func getGamesByDeveloper(developer string) ([]Game, error) {
-	statement := `select * from games where developer = $1`
+	statement := `SELECT * FROM games WHERE developer=$1;`
 	return getSliceOfGames(statement, developer)
 }
 
 // getGamesWithRating will get all games with the given rating
 func getGamesWithRating(rating string) ([]Game, error) {
-	statement := `select * from games where rating = $1`
+	statement := `SELECT * FROM games WHERE rating=$1;`
 	return getSliceOfGames(statement, rating)
 }
 
@@ -124,14 +124,14 @@ func getSliceOfGames(statement, value string) ([]Game, error) {
 
 // deleteGame removes the game from the database whos title matches the given title
 func deleteGame(title string) error {
-	statement := `delete from games where title = $1`
+	statement := `DELETE FROM games WHERE title=$1;`
 	_, err := db.Exec(statement, title)
 	return err
 }
 
 // updateGame updates the info of a game whos title matches the given title
 func (g *Game) updateGame(title string) error {
-	statement := `update games set title = $2, developer = $3, rating = $4 where title = $1`
+	statement := `UPDATE games SET title=$2, developer=$3, rating=$4 WHERE title=$1;`
 	_, err := db.Exec(statement, title, g.Title, g.Developer, g.Rating)
 	return err
 }
