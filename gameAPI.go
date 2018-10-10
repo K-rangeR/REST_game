@@ -129,7 +129,11 @@ func handleGetRating(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	json.NewEncoder(w).Encode(&games)
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(&games) // handle this error
+	if err != nil {
+		fmt.Println("handleGetRating JSON ecoding error:")
+	}
 	w.WriteHeader(http.StatusOK)
 }
 

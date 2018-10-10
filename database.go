@@ -106,10 +106,6 @@ func getSliceOfGames(statement, value string) ([]Game, error) {
 	}
 	defer rows.Close()
 
-	if !rows.Next() {
-		return nil, sql.ErrNoRows
-	}
-
 	games := make([]Game, 0)
 	for rows.Next() {
 		game := Game{}
