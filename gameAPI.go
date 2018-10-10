@@ -54,6 +54,7 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(&game)
 	w.WriteHeader(http.StatusOK)
 }
@@ -115,6 +116,7 @@ func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(&games)
 	w.WriteHeader(http.StatusOK)
 }
