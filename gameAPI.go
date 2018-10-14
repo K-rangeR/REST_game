@@ -136,7 +136,7 @@ func handleGetRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(&games) // handle this error
+	err = json.NewEncoder(w).Encode(&games)
 	if err != nil {
 		fmt.Println("handleGetRating JSON ecoding error:", err)
 		w.WriteHeader(http.StatusInternalServerError)
