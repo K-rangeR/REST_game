@@ -40,7 +40,6 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 // handleGet will search the DB for the specified game title
@@ -48,7 +47,6 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 func handleGet(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gameTitle := vars["title"]
-	fmt.Println(gameTitle)
 	gameTitle = strings.ToLower(gameTitle)
 	game, err := getGameByTitle(gameTitle)
 	if err != nil {
@@ -63,7 +61,6 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 // handleUpdate will update the data on an existing game
@@ -87,7 +84,6 @@ func handleUpdate(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 // setGameDataCase will set the games title, developer, and
@@ -108,7 +104,6 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 // handleGetDeveloper will get a list of all the games with
@@ -130,7 +125,6 @@ func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 // handleGetRating will get a list of all the games with the specified rating
@@ -150,7 +144,6 @@ func handleGetRating(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 
 // Allow user to pass in the name of the db dbCredentials file
