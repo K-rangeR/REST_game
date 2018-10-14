@@ -11,8 +11,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// TODO: Add better error handling when creating JSON
-
 // Game represents some data that is part of a video game
 type Game struct {
 	Title     string `json:"title"`
