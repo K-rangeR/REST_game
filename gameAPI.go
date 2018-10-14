@@ -11,6 +11,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// TODO: Add better error handling when creating JSON
+
 // Game represents some data that is part of a video game
 type Game struct {
 	Title     string `json:"title"`
@@ -55,7 +57,12 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(&game)
+	err = json.NewEncoder(w).Encode(&game)
+	if err != nil {
+		fmt.Println("handleGet: JSON encoding err:", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -117,7 +124,12 @@ func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(&games)
+	err = json.NewEncoder(w).Encode(&games)
+	if err != nil {
+		fmt.Println("handleGetDeveloper: JSON ecoding error:", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -134,7 +146,9 @@ func handleGetRating(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(&games) // handle this error
 	if err != nil {
-		fmt.Println("handleGetRating JSON ecoding error:")
+		fmt.Println("handleGetRating JSON ecoding error:", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	w.WriteHeader(http.StatusOK)
 }
