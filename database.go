@@ -115,6 +115,10 @@ func getSliceOfGames(statement, value string) ([]Game, error) {
 		}
 		games = append(games, game)
 	}
+
+	if len(games) == 0 {
+		return nil, fmt.Errorf("games not found")
+	}
 	return games, nil
 }
 
