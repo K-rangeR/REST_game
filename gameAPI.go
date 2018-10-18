@@ -28,13 +28,13 @@ func handleAdd(w http.ResponseWriter, r *http.Request) {
 	var newGame Game
 	err := json.Unmarshal(bodyData, &newGame)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("handleAdd:", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	setGameDataCase(&newGame)
 	if err = newGame.addGame(); err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("handleAdd:", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -48,7 +48,7 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 	gameTitle = strings.ToLower(gameTitle)
 	game, err := getGameByTitle(gameTitle)
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("handleGet:", err.Error())
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -67,6 +67,7 @@ func handleUpdate(w http.ResponseWriter, r *http.Request) {
 	gameTitle := vars["title"]
 	game, err := getGameByTitle(gameTitle)
 	if err != nil {
+		fmt.Println("handleUpdate:", err)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -79,6 +80,7 @@ func handleUpdate(w http.ResponseWriter, r *http.Request) {
 	setGameDataCase(game)
 	err = game.updateGame(gameTitle)
 	if err != nil {
+		fmt.Println("handleUpdate:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -99,6 +101,7 @@ func handleDelete(w http.ResponseWriter, r *http.Request) {
 	gameTitle = strings.ToLower(gameTitle)
 	err := deleteGame(gameTitle)
 	if err != nil {
+		fmt.Println("handleDelete:", err)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -112,7 +115,7 @@ func handleGetDeveloper(w http.ResponseWriter, r *http.Request) {
 	developer = strings.ToLower(developer)
 	games, err := getGamesByDeveloper(developer)
 	if err != nil {
-		fmt.Println("handle get dev:", err.Error())
+		fmt.Println("handleGetDeveloper:", err.Error())
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -132,6 +135,7 @@ func handleGetRating(w http.ResponseWriter, r *http.Request) {
 	rating = strings.ToUpper(rating)
 	games, err := getGamesWithRating(rating)
 	if err != nil {
+		fmt.Println("handleGetRating:", err)
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
