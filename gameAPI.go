@@ -89,9 +89,9 @@ func handleUpdate(w http.ResponseWriter, r *http.Request) {
 // setGameDataCase will set the games title, developer, and
 // rating to lower case before its added to the database
 func setGameDataCase(g *Game) {
-	strings.ToLower(g.Title)
-	strings.ToLower(g.Developer)
-	strings.ToUpper(g.Rating)
+	g.Title = strings.ToLower(g.Title)
+	g.Developer = strings.ToLower(g.Developer)
+	g.Rating = strings.ToUpper(g.Rating)
 }
 
 // handleDelete will remove the specified game from the database
