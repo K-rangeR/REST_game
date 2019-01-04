@@ -34,7 +34,7 @@ func setUpDatabase(credentialsFile string) error {
 	}
 
 	dbInfo := fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=disable",
-		credentials.Host, credentials.Port, credentials.User, credentials.User)
+		credentials.Host, credentials.Port, credentials.User, credentials.Dbname)
 
 	db, err = sql.Open("postgres", dbInfo)
 	if err != nil {
@@ -80,7 +80,7 @@ func (g *Game) addGame() error {
 // getGameByTitle searchs the database for a game whos title matches the title given
 func getGameByTitle(title string) (*Game, error) {
 	game := &Game{}
-	statement := `SELECT title, developer, rating FROM games WHERE title=$1;`
+	statement := `SELECT * FROM games WHERE title=$1;`
 	err := db.QueryRow(statement, title).Scan(&game.Title, &game.Developer, &game.Rating)
 	return game, err
 }
