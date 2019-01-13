@@ -51,8 +51,8 @@ $ ./REST_game database_login.json
 ```
 
 ## Dependencies
-* [Gorilla Mux ] (https://github.com/gorilla/mux)
-* [lib/pq] (https://github.com/lib/pq)
+* [Gorilla Mux ](https://github.com/gorilla/mux)
+* [lib/pq](https://github.com/lib/pq)
 
 
 
