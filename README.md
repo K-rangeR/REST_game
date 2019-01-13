@@ -1,8 +1,8 @@
 # REST_game
 This is a RESTful web service that supports GRUD operations on
-a postgreSQL database storing basic video game information. It
-will respond to GET requests with one or more video game titles along
-with their developer and rating in a JSON format.
+a postgreSQL database storing basic video game information. JSON
+is the format of the video game data that will exchanged between
+the server and its clients.
 
 ## Database Set Up
 The postgreSQL database that this application expects to interact
@@ -41,7 +41,8 @@ $ ./REST_game database_login.json
 * gameAPI/developer/{dev} (GET)
 * gameAPI/rating/{rating} (GET)
 
-## JSON Response Format
+## JSON Request/Response Format
+The developer and rating endpoints will return an array of video game information.
 ```
 {
 	"title":"...",
